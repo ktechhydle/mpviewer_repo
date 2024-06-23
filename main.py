@@ -6,7 +6,7 @@ class MPVIEWER(QMainWindow):
     def __init__(self):
         super(MPVIEWER, self).__init__()
         # Creating the main window
-        self.setWindowIcon(QIcon('ui/Main Logos/MPRUN_logoV3.png'))
+        self.setWindowIcon(QIcon('ui/Main Logos/MPVIEWER_logo.png'))
         self.setWindowTitle('MPVIEWER')
         self.setGeometry(0, 0, 1500, 800)
         self.setAcceptDrops(True)
