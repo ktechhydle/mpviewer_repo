@@ -55,6 +55,9 @@ class CustomGraphicsView(QGraphicsView):
         except Exception:
             pass
 
+    def mouseDoubleClickEvent(self, event):
+        pass
+
 class CustomGraphicsScene(QGraphicsScene):
     def __init__(self):
         super().__init__()
