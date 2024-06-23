@@ -2,7 +2,7 @@ from src.scripts.imports import *
 from src.framework.custom_classes import *
 
 class CustomGraphicsView(QGraphicsView):
-    def __init__(self, zoom_spin):
+    def __init__(self):
         super().__init__()
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
         self.setMouseTracking(True)
@@ -21,11 +21,9 @@ class CustomGraphicsView(QGraphicsView):
         self.zoom = 20
         self.zoomStep = 1
         self.zoomRange = [0, 100]
-        self.zoom_spin = zoom_spin
 
     def wheelEvent(self, event):
         try:
-            self.zoom_spin.blockSignals(True)
             self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
             self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
 
@@ -47,10 +45,6 @@ class CustomGraphicsView(QGraphicsView):
 
             if not clamped or self.zoomClamp is False:
                 self.scale(zoomFactor, zoomFactor)
-
-            current_zoom_percentage = self.transform().m11() * 100
-            self.zoom_spin.setValue(int(current_zoom_percentage))
-            self.zoom_spin.blockSignals(False)
 
         except Exception:
             pass

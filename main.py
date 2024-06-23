@@ -7,6 +7,7 @@ class MPVIEWER(QMainWindow):
         super(MPVIEWER, self).__init__()
         # Creating the main window
         self.setWindowIcon(QIcon('ui/Main Logos/MPRUN_logoV3.png'))
+        self.setWindowTitle('MPVIEWER')
         self.setGeometry(0, 0, 1500, 800)
         self.setAcceptDrops(True)
 
@@ -18,7 +19,7 @@ class MPVIEWER(QMainWindow):
     def createGUI(self):
         self.grScene = CustomGraphicsScene()
         self.grScene.setParentWindow(self)
-        self.grView = CustomGraphicsView(QSpinBox(self))
+        self.grView = CustomGraphicsView()
         self.grView.setScene(self.grScene)
 
         self.setCentralWidget(self.grView)
@@ -27,14 +28,20 @@ class MPVIEWER(QMainWindow):
         self.menu = QMenuBar()
         self.setMenuBar(self.menu)
         file_menu = self.menu.addMenu('&File')
+        view_menu = self.menu.addMenu('&View')
 
-        # Create actions
+        # Create file actions
         open_action = QAction('Open', self)
         open_action.triggered.connect(self.grScene.manager.load)
+
+        # Create view actions
+        center_on_content_action = QAction('Center On Content', self)
+        center_on_content_action.triggered.connect(lambda: self.grView.fitInView(self.grScene.itemsBoundingRect(), Qt.KeepAspectRatio))
 
         # Add actions
         file_menu.addAction(open_action)
 
+        view_menu.addAction(center_on_content_action)
 
 
 if __name__ == '__main__':
