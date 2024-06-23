@@ -1,7 +1,7 @@
-![MPRUN_logo_rounded_corners_version copy](C:\Users\kelle\PycharmProjects\mpviewer_repo\ui\Main%20Logos\MPRUN_logoV3.png)
 # Introducing MPVIEWER, a file viewer for MP Software formats
 
 With MPVIEWER, you can easily open and view `.mp` files. You can pan, zoom, and center on the scene to see full files.
+MPVIEWER is considered an ideal app for coaches, as they can view athlete's runs easily and quickly.
 
 To open a file, navigate to the file menu and click `File > Open`.
 
