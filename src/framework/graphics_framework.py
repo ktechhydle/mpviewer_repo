@@ -1,6 +1,15 @@
 from src.scripts.imports import *
 from src.framework.custom_classes import *
 
+class CustomViewport(QOpenGLWidget):
+    def __init__(self):
+        super().__init__()
+
+        format = QSurfaceFormat()
+        format.setSamples(4)
+        format.setRenderableType(QSurfaceFormat.OpenGL)
+        self.setFormat(format)
+
 class CustomGraphicsView(QGraphicsView):
     def __init__(self):
         super().__init__()

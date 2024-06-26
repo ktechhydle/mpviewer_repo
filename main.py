@@ -21,6 +21,7 @@ class MPVIEWER(QMainWindow):
         self.grScene.setParentWindow(self)
         self.grView = CustomGraphicsView()
         self.grView.setScene(self.grScene)
+        self.grView.setViewport(CustomViewport())
 
         self.setCentralWidget(self.grView)
 
