@@ -129,7 +129,6 @@ class SceneManager:
     def deserialize_items(self, items_data):
         # Handle metadata
         metadata = items_data.pop(0)
-        self.scene.mpversion = metadata.get('mpversion', 'unknown')
 
         for item_data in items_data:
             item = None
@@ -150,8 +149,6 @@ class SceneManager:
 
             if item is not None:
                 self.scene.addItem(item)
-
-        self.scene.parentWindow.use_exit_add_canvas()
 
     def deserialize_color(self, color):
         return QColor(color['red'], color['green'], color['blue'], color['alpha'])
