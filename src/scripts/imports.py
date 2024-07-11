@@ -17,3 +17,5 @@ from PyQt5.Qt import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from scipy.signal import savgol_filter
+from skimage.measure import approximate_polygon

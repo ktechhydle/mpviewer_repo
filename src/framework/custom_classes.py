@@ -1,14 +1,5 @@
 from src.scripts.imports import *
-
-class item_stack:
-    def __init__(self, initial_value=""):
-        self._value = initial_value
-
-    def set(self, value):
-        self._value = value
-
-    def get(self):
-        return self._value
+from src.framework.undo_commands import *
 
 class CustomGraphicsItemGroup(QGraphicsItemGroup):
     def __init__(self):
@@ -314,6 +305,11 @@ class CustomPixmapItem(QGraphicsPixmapItem):
         else:
             super().mouseMoveEvent(event)
 
+    def loadFromData(self, data):
+        pixmap = QPixmap()
+        pixmap.loadFromData(data)
+        self.setPixmap(pixmap)
+
     def store_filename(self, file):
         self.filename = file
 
@@ -346,11 +342,13 @@ class CustomPixmapItem(QGraphicsPixmapItem):
         QDesktopServices.openUrl(QUrl.fromLocalFile(self.return_filename()))
 
 class CustomSvgItem(QGraphicsSvgItem):
-    def __init__(self, file):
-        super().__init__(file)
+    def __init__(self, *file):
+        super().__init__(*file)
 
         self.filename = None
-        self.render = QSvgRenderer(file)
+        self.svg_data = None
+        for f in file:
+            self.render = QSvgRenderer(f)
 
         self.gridEnabled = False
 
@@ -371,6 +369,19 @@ class CustomSvgItem(QGraphicsSvgItem):
 
         else:
             super().mouseMoveEvent(event)
+
+    def loadFromData(self, svg_data) -> None:
+        try:
+            self.svg_data = svg_data
+            renderer = QSvgRenderer(QByteArray(svg_data.encode('utf-8')))
+            self.setSharedRenderer(renderer)
+            self.setElementId("")  # Optional: set specific SVG element ID if needed
+        except Exception as e:
+            print(f"Error in loadFromData: {e}")
+
+    def svgData(self) -> str:
+        if self.svg_data is not None:
+            return self.svg_data
 
     def store_filename(self, file):
         self.filename = file
@@ -401,7 +412,9 @@ class CustomSvgItem(QGraphicsSvgItem):
 
     def mouseDoubleClickEvent(self, event):
         super().mouseDoubleClickEvent(event)
-        QDesktopServices.openUrl(QUrl.fromLocalFile(self.return_filename()))
+
+        if os.path.exists(QUrl.fromLocalFile(self.source())):
+            QDesktopServices.openUrl(QUrl.fromLocalFile(self.source()))
 
 class CustomTextItem(QGraphicsTextItem):
     def __init__(self, text="", parent=None):
@@ -423,13 +436,17 @@ class CustomTextItem(QGraphicsTextItem):
 
     def mouseMoveEvent(self, event):
         if self.gridEnabled:
-            # Calculate the position relative to the scene's coordinate system
-            scene_pos = event.scenePos()
-            x = (int(scene_pos.x() / self.scene().gridSize) * self.scene().gridSize - self.mouse_offset.x())
-            y = (int(scene_pos.y() / self.scene().gridSize) * self.scene().gridSize - self.mouse_offset.y())
+            if self.hasFocus():
+                super().mouseMoveEvent(event)
 
-            # Set the position relative to the scene's coordinate system
-            self.setPos(x, y)
+            else:
+                # Calculate the position relative to the scene's coordinate system
+                scene_pos = event.scenePos()
+                x = (int(scene_pos.x() / self.scene().gridSize) * self.scene().gridSize - self.mouse_offset.x())
+                y = (int(scene_pos.y() / self.scene().gridSize) * self.scene().gridSize - self.mouse_offset.y())
+
+                # Set the position relative to the scene's coordinate system
+                self.setPos(x, y)
 
         else:
             super().mouseMoveEvent(event)
@@ -505,7 +522,7 @@ class CustomTextItem(QGraphicsTextItem):
 
     def select_text_and_set_cursor(self):
         self.setTextInteractionFlags(Qt.TextEditorInteraction)
-        self.setFocus(Qt.MouseFocusReason)
+        self.setFocus()
         cursor = self.textCursor()
         cursor.movePosition(QTextCursor.End)
         cursor.select(QTextCursor.SelectionType.Document)
@@ -524,6 +541,9 @@ class CustomTextItem(QGraphicsTextItem):
 
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionChange and isinstance(self.parentItem(), LeaderLineItem):
+            self.parentItem().updatePathEndPoint()
+
+        elif change == QGraphicsItem.ItemSelectedChange and isinstance(self.parentItem(), LeaderLineItem):
             self.parentItem().updatePathEndPoint()
         return super().itemChange(change, value)
 
@@ -770,21 +790,6 @@ class CanvasTextItem(QGraphicsTextItem):
 
         super().paint(painter, option, widget)
 
-class ControlPoint(QGraphicsEllipseItem):
-    positionChanged = pyqtSignal()
-
-    def __init__(self, x, y, parent=None):
-        super().__init__(-5, -5, 10, 10, parent)
-        self.setBrush(QBrush(Qt.blue))
-        self.setPen(QPen(Qt.black))
-        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges)
-        self.setPos(x, y)
-
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange and self.scene():
-            self.positionChanged.emit()
-        return super().itemChange(change, value)
-
 class WaterMarkItem(QGraphicsPixmapItem):
     def __init__(self, pixmap):
         super().__init__(pixmap)
@@ -808,5 +813,3 @@ class WaterMarkItem(QGraphicsPixmapItem):
 
         else:
             super().mouseMoveEvent(event)
-
-

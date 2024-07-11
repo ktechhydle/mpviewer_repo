@@ -311,35 +311,35 @@ class SceneManager:
         return path_item
 
     def deserialize_custom_svg_item(self, data):
-        if os.path.exists(data['filename']):
-            svg_item = CustomSvgItem(data['filename'])
+        try:
+            svg_item = CustomSvgItem()
             svg_item.store_filename(data['filename'])
+            svg_item.loadFromData(data['raw_svg_data'])
             svg_item.setRotation(data['rotation'])
             svg_item.setTransform(self.deserialize_transform(data['transform']))
             svg_item.setPos(data['x'], data['y'])
             svg_item.setToolTip(data['name'])
             svg_item.setZValue(data['zval'])
             svg_item.setVisible(data['visible'])
+
             return svg_item
-        else:
-            self.repair_needed = True
-            return None
+
+        except Exception as e:
+            print(e)
 
     def deserialize_custom_pixmap_item(self, data):
-        if os.path.exists(data['filename']):
-            pixmap = QPixmap(data['filename'])
-            pixmap_item = CustomPixmapItem(pixmap)
-            pixmap_item.store_filename(data['filename'])
-            pixmap_item.setRotation(data['rotation'])
-            pixmap_item.setTransform(self.deserialize_transform(data['transform']))
-            pixmap_item.setPos(data['x'], data['y'])
-            pixmap_item.setToolTip(data['name'])
-            pixmap_item.setZValue(data['zval'])
-            pixmap_item.setVisible(data['visible'])
-            return pixmap_item
-        else:
-            self.repair_needed = True
-            return None
+        pixmap = QPixmap(data['filename'])
+        pixmap_item = CustomPixmapItem(pixmap)
+        pixmap_item.store_filename(data['filename'])
+        pixmap_item.loadFromData(data['data'])
+        pixmap_item.setRotation(data['rotation'])
+        pixmap_item.setTransform(self.deserialize_transform(data['transform']))
+        pixmap_item.setPos(data['x'], data['y'])
+        pixmap_item.setToolTip(data['name'])
+        pixmap_item.setZValue(data['zval'])
+        pixmap_item.setVisible(data['visible'])
+
+        return pixmap_item
 
     def repair_file(self):
         try:
