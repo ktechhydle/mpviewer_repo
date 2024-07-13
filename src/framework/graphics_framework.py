@@ -199,15 +199,17 @@ class SceneManager:
         text_item = CustomTextItem(data['text'])
         text_item.setFont(self.deserialize_font(data['font']))
         text_item.setDefaultTextColor(self.deserialize_color(data['color']))
-        text_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-        text_item.setRotation(data['rotation'])
-        text_item.setTransform(self.deserialize_transform(data['transform']))
-        text_item.setScale(data['scale'])
-        text_item.setPos(data['x'], data['y'])
-        text_item.setToolTip(data['name'])
-        text_item.setZValue(data['zval'])
         text_item.locked = data['locked']
-        text_item.setVisible(data['visible'])
+
+        for attr in data['attr']:
+            text_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+            text_item.setRotation(attr['rotation'])
+            text_item.setTransform(self.deserialize_transform(attr['transform']))
+            text_item.setScale(attr['scale'])
+            text_item.setPos(attr['x'], attr['y'])
+            text_item.setToolTip(attr['name'])
+            text_item.setZValue(attr['zval'])
+            text_item.setVisible(attr['visible'])
 
         if data.get('markdown', True):
             text_item.toMarkdown()
@@ -232,14 +234,16 @@ class SceneManager:
         path_item = CustomPathItem(sub_path)
         path_item.setPen(self.deserialize_pen(data['pen']))
         path_item.setBrush(self.deserialize_brush(data['brush']))
-        path_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-        path_item.setRotation(data['rotation'])
-        path_item.setTransform(self.deserialize_transform(data['transform']))
-        path_item.setScale(data['scale'])
-        path_item.setPos(data['x'], data['y'])
-        path_item.setToolTip(data['name'])
-        path_item.setZValue(data['zval'])
-        path_item.setVisible(data['visible'])
+
+        for attr in data['attr']:
+            path_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+            path_item.setRotation(attr['rotation'])
+            path_item.setTransform(self.deserialize_transform(attr['transform']))
+            path_item.setScale(attr['scale'])
+            path_item.setPos(attr['x'], attr['y'])
+            path_item.setToolTip(attr['name'])
+            path_item.setZValue(attr['zval'])
+            path_item.setVisible(attr['visible'])
 
         if data.get('smooth', True):
             path_item.smooth = True
@@ -262,14 +266,16 @@ class SceneManager:
 
     def deserialize_custom_group_item(self, data):
         group_item = CustomGraphicsItemGroup()
-        group_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-        group_item.setRotation(data['rotation'])
-        group_item.setTransform(self.deserialize_transform(data['transform']))
-        group_item.setScale(data['scale'])
-        group_item.setPos(data['x'], data['y'])
-        group_item.setToolTip(data['name'])
-        group_item.setZValue(data['zval'])
-        group_item.setVisible(data['visible'])
+
+        for attr in data['attr']:
+            group_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+            group_item.setRotation(attr['rotation'])
+            group_item.setTransform(self.deserialize_transform(attr['transform']))
+            group_item.setScale(attr['scale'])
+            group_item.setPos(attr['x'], attr['y'])
+            group_item.setToolTip(attr['name'])
+            group_item.setZValue(attr['zval'])
+            group_item.setVisible(attr['visible'])
 
         for child_data in data['children']:
             if child_data['type'] == 'CustomTextItem':
@@ -303,23 +309,26 @@ class SceneManager:
         path_item = LeaderLineItem(sub_path, data['text'])
         path_item.setPen(self.deserialize_pen(data['pen']))
         path_item.setBrush(self.deserialize_brush(data['brush']))
-        path_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-        path_item.setRotation(data['rotation'])
-        path_item.setTransform(self.deserialize_transform(data['transform']))
-        path_item.setScale(data['scale'])
-        path_item.setPos(data['x'], data['y'])
-        path_item.setToolTip(data['name'])
-        path_item.setZValue(data['zval'])
-        path_item.text_element.setPos(data['textposx'], data['textposy'])
         path_item.text_element.setZValue(data['textzval'])
         path_item.text_element.setDefaultTextColor(self.deserialize_color(data['textcolor']))
         path_item.text_element.setFont(self.deserialize_font(data['textfont']))
         path_item.text_element.setTransformOriginPoint(self.deserialize_point(data['texttransformorigin']))
         path_item.text_element.setTransform(self.deserialize_transform(data['texttransform']))
         path_item.text_element.setScale(data['textscale'])
+        path_item.text_element.setPos(data['textposx'], data['textposy'])
         path_item.text_element.setRotation(data['textrotation'])
-        path_item.setVisible(data['visible'])
         path_item.text_element.setVisible(data['textvisible'])
+
+        for attr in data['attr']:
+            path_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+            path_item.setRotation(attr['rotation'])
+            path_item.setTransform(self.deserialize_transform(attr['transform']))
+            path_item.setScale(attr['scale'])
+            path_item.setPos(attr['x'], attr['y'])
+            path_item.setToolTip(attr['name'])
+            path_item.setZValue(attr['zval'])
+            path_item.setVisible(attr['visible'])
+
         path_item.updatePathEndPoint()
 
         return path_item
@@ -329,14 +338,16 @@ class SceneManager:
             svg_item = CustomSvgItem()
             svg_item.store_filename(data['filename'])
             svg_item.loadFromData(data['raw_svg_data'])
-            svg_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-            svg_item.setRotation(data['rotation'])
-            svg_item.setTransform(self.deserialize_transform(data['transform']))
-            svg_item.setScale(data['scale'])
-            svg_item.setPos(data['x'], data['y'])
-            svg_item.setToolTip(data['name'])
-            svg_item.setZValue(data['zval'])
-            svg_item.setVisible(data['visible'])
+
+            for attr in data['attr']:
+                svg_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+                svg_item.setRotation(attr['rotation'])
+                svg_item.setTransform(self.deserialize_transform(attr['transform']))
+                svg_item.setScale(attr['scale'])
+                svg_item.setPos(attr['x'], attr['y'])
+                svg_item.setToolTip(attr['name'])
+                svg_item.setZValue(attr['zval'])
+                svg_item.setVisible(attr['visible'])
 
             return svg_item
 
@@ -348,14 +359,16 @@ class SceneManager:
         pixmap_item = CustomPixmapItem(pixmap)
         pixmap_item.store_filename(data['filename'])
         pixmap_item.loadFromData(data['data'])
-        pixmap_item.setTransformOriginPoint(self.deserialize_point(data['transformorigin']))
-        pixmap_item.setRotation(data['rotation'])
-        pixmap_item.setTransform(self.deserialize_transform(data['transform']))
-        pixmap_item.setScale(data['scale'])
-        pixmap_item.setPos(data['x'], data['y'])
-        pixmap_item.setToolTip(data['name'])
-        pixmap_item.setZValue(data['zval'])
-        pixmap_item.setVisible(data['visible'])
+
+        for attr in data['attr']:
+            pixmap_item.setTransformOriginPoint(self.deserialize_point(attr['transformorigin']))
+            pixmap_item.setRotation(attr['rotation'])
+            pixmap_item.setTransform(self.deserialize_transform(attr['transform']))
+            pixmap_item.setScale(attr['scale'])
+            pixmap_item.setPos(attr['x'], attr['y'])
+            pixmap_item.setToolTip(attr['name'])
+            pixmap_item.setZValue(attr['zval'])
+            pixmap_item.setVisible(attr['visible'])
 
         pixmap = pixmap_item.pixmap()
         buffer = QBuffer()

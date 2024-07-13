@@ -182,6 +182,14 @@ class CustomPathItem(QGraphicsPathItem):
 
         return item
 
+    def simplify(self, old_pos, new_pos):
+        path = self.path()
+        path.clear()
+        path.moveTo(old_pos)
+        path.lineTo(new_pos)
+
+        self.setPath(path)
+
     def smooth_path(self, path, tolerance: float):
         vertices = [(point.x(), point.y()) for point in path.toSubpathPolygons()[0]]
         x, y = zip(*vertices)
@@ -343,7 +351,7 @@ class CustomPixmapItem(QGraphicsPixmapItem):
         super().mouseDoubleClickEvent(event)
 
         if event.modifiers() & Qt.ShiftModifier:
-            if os.path.exists(self.return_filename()):
+            if os.path.exists(self.return_filename() if self.return_filename() is not None else ''):
                 QDesktopServices.openUrl(QUrl.fromLocalFile(self.return_filename()))
 
 class CustomSvgItem(QGraphicsSvgItem):
@@ -437,7 +445,7 @@ class CustomSvgItem(QGraphicsSvgItem):
         super().mouseDoubleClickEvent(event)
 
         if event.modifiers() & Qt.ShiftModifier:
-            if os.path.exists(self.source()):
+            if os.path.exists(self.source() if self.source() is not None else ''):
                 QDesktopServices.openUrl(QUrl.fromLocalFile(self.source()))
 
 class CustomTextItem(QGraphicsTextItem):
@@ -843,5 +851,3 @@ class WaterMarkItem(QGraphicsPixmapItem):
 
         else:
             super().mouseMoveEvent(event)
-
-
