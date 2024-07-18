@@ -1,4 +1,4 @@
-# Introducing MPVIEWER, a file viewer for MP Software formats
+# Introducing MPVIEWER, a file viewer for MP Software formats (.mp)
 
 With MPVIEWER, you can easily open and view `.mp` files. You can pan, zoom, and center on the scene to see full files.
 MPVIEWER is considered an ideal app for coaches, as they can view athlete's runs easily and quickly.
