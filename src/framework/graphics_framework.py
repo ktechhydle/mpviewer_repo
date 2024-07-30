@@ -1,5 +1,6 @@
 from src.scripts.imports import *
 from src.framework.custom_classes import *
+from src.framework.tools import *
 
 class CustomViewport(QOpenGLWidget):
     def __init__(self):
@@ -11,7 +12,7 @@ class CustomViewport(QOpenGLWidget):
         self.setFormat(format)
 
 class CustomGraphicsView(QGraphicsView):
-    def __init__(self):
+    def __init__(self, scene):
         super().__init__()
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
         self.setMouseTracking(True)
@@ -24,6 +25,12 @@ class CustomGraphicsView(QGraphicsView):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
 
+        # tools
+        self.inspectorTool = InspectorTool(scene, self)
+
+        # actions
+        self.current_action = None
+
         # Add methods for zooming
         self.zoomInFactor = 1.25
         self.zoomClamp = True
@@ -34,7 +41,6 @@ class CustomGraphicsView(QGraphicsView):
     def wheelEvent(self, event):
         try:
             self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-            self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
 
             # Calculate zoom Factor
             zoomOutFactor = 1 / self.zoomInFactor
@@ -58,8 +64,39 @@ class CustomGraphicsView(QGraphicsView):
         except Exception:
             pass
 
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+
+        if self.currentAction() == 'inspector':
+            self.inspectorTool.on_press(event)
+
+    def mouseMoveEvent(self, event):
+        super().mouseMoveEvent(event)
+
+        self.showToolTip(event)
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+
+        if self.currentAction() == 'inspector':
+            self.inspectorTool.on_release(event)
+
     def mouseDoubleClickEvent(self, event):
         pass
+
+    def showToolTip(self, event):
+        p = self.mapToGlobal(event.pos())
+        p.setY(p.y())
+        p.setX(p.x() + 10)
+
+        QToolTip.showText(p, f'''x: {int(self.mapToScene(event.pos()).x())}
+y: {int(self.mapToScene(event.pos()).y())}''')
+
+    def currentAction(self):
+        return self.current_action
+
+    def setCurrentAction(self, action):
+        self.current_action = action
 
 class CustomGraphicsScene(QGraphicsScene):
     def __init__(self):
