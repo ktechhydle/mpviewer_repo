@@ -34,13 +34,16 @@ class MPVIEWER(QMainWindow):
 
         # Create file actions
         open_action = QAction('Open', self)
+        open_action.setShortcut(QKeySequence('Ctrl+O'))
         open_action.triggered.connect(self.grScene.manager.load)
 
         # Create view actions
         center_on_content_action = QAction('Center On Content', self)
+        center_on_content_action.setShortcut(QKeySequence('C'))
         center_on_content_action.triggered.connect(lambda: self.grView.fitInView(self.grScene.itemsBoundingRect(), Qt.KeepAspectRatio))
 
         inspect_action = QAction('Inspect', self)
+        inspect_action.setShortcut(QKeySequence('I'))
         inspect_action.triggered.connect(self.useInspector)
 
         # Add actions

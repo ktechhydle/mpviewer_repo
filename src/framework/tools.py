@@ -50,6 +50,18 @@ Rotation: {int(self.item.rotation())}°
         self.layout().addWidget(HorizontalSeparator())
         self.layout().addWidget(copy_btn)
 
+    def updateItem(self, item):
+        self.item = item
+
+        self.label1.setText(f'Type: {self.item.toolTip()}')
+        self.label2.setText(f'''Position: {int(self.item.sceneBoundingRect().x())}, {int(self.item.sceneBoundingRect().y())}
+Width: {int(self.item.boundingRect().width())}
+Height: {int(self.item.boundingRect().height())}
+Scale: {int(self.item.scale() * 100)}%
+Rotation: {int(self.item.rotation())}°
+''')
+
+
     def copyAttr(self):
         clipboard = QApplication.clipboard()
         label1_text = self.label1.text()
@@ -60,6 +72,7 @@ Rotation: {int(self.item.rotation())}°
     def closeEvent(self, event):
         self.item.scene().views()[0].setDragMode(QGraphicsView.ScrollHandDrag)
         self.item.scene().views()[0].setCurrentAction('')
+        self.item.scene().views()[0].inspectorTool.windowShown = False
 
         event.accept()
 
@@ -69,13 +82,21 @@ class InspectorTool:
         self.view = view
 
         self.window = None
+        self.windowShown = False
 
     def on_press(self, event):
         item = self.scene.itemAt(self.view.mapToScene(event.pos()), self.view.transform())
 
         if item:
-            self.window = InspectorWindow(item)
-            # self.window.move(self.scene.parentWindow().pos())
+            if not self.windowShown:
+                self.window = InspectorWindow(item)
+                self.window.move(event.pos().x() + 25, (event.pos().y() - self.window.height()) + 30)
+                self.view.setDragMode(QGraphicsView.NoDrag)
+                self.windowShown = True
+                return
+
+            self.window.move(event.pos().x() + 25, (event.pos().y() - self.window.height()) + 30)
+            self.window.updateItem(item)
             self.view.setDragMode(QGraphicsView.NoDrag)
 
 
